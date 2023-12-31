@@ -1,0 +1,28 @@
+# Reconfigure for vault
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vault-ingress
+  namespace: vault
+  annotations:
+     nginx.ingress.kubernetes.io/rewrite-target: /
+     cert-manager.io/cluster-issuer: letsencrypt-production
+    #  nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    #  nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    #  nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - vault.ithankube.xyz
+    secretName: vault-tls-production
+  rules:
+  - host: vault.ithankube.xyz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vault
+            port:
+              number: 8200

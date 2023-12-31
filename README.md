@@ -5,7 +5,34 @@ Welcome to my personal Journey to DevOps! In this blog-like guide, I'll be docum
 #### Setting Up K3s
 K3s is a lightweight Kubernetes distribution, perfect for edge, IoT, and CI/CD environments. Here's how to get it up and running:
 
-# Quick Reference
+A I forgot before,so some details:
+
+# Where are you installing this cluster?
+
+I have a hetzner dedicated server with Ubuntu, ~65GB of RAM, 1TB of SSD and 4 cores, 8 threads each.
+
+We pay ~60 euros per month for it. 
+
+Do you need a server like this? hell no! k3s can run a raspberry pi, so you can get a raspberry pi and install k3s on it and you will be fine, or even just a virtual machine with 2GB of RAM and 2 cores will be fine.
+
+but I plan to use this server for some light hosting so its worth it for me.
+
+# What are you installing?
+   I will let you know once I figure it out :D 
+   for now:
+   - ArgoCD - done
+   - Gitea - done ( sort off? I need to figure out proper dabase setup eventually, no promises though )
+   - Vault - wip
+   - Some observability tools ( Prometheus, Grafana, Loki, Tempo ... ) will figure out the details later.
+   - Some nodejs apps
+   - Some build tools so we can push -> build -> deploy our apps in the same cluster.
+
+# Quick note on mental sanity
+   I'm not a devops engineer, I'm a full stack engineer that wants to learn devops, so I will make mistakes, I will do things wrong, I will do things that don't make sense, but I will learn from them and I will get better at this. So if you are reading this and you are a devops engineer, please don't judge me too hard, I'm trying my best :D but feel free to give me feedback and tell me what I'm doing wrong, everyone who may read this in the future will thank you for it.
+
+   If you are starting your journey to devops with me, be aware! I tried this 2 time already, and I got frustrated and gave up the first time. Its not an easy journey, but if you take it one step at a time, and push yourself to at least have 1 thing working at a time, you will enjoy the journey and you will learn a lot.
+
+   At least that's what is happening to me now! 
 
 ## Useful links
 - [K3s Documentation](https://rancher.com/docs/k3s/latest/en/)
@@ -308,5 +335,49 @@ First lets add the help
    ```bash
    kubectl get certificate -n gitea
    ```
+
+TADA! You have gitea installed in your cluster and it should accessible from the internet. 
+If its not accessible, well... GPT your error and hope for the best, at least that's what I do :D
+
+but I will let github copilot fill some ideas on what can be wrong here.
+
+8. **Debug the ingress**
+   ```bash
+   kubectl describe ingressroute -n gitea
+   ```
+
+9. **Debug the certificate**
+   ```bash
+   kubectl describe certificate -n gitea
+   ```
+
+10. **Debug the pods**
+   ```bash
+   kubectl get pods -n gitea
+   kubectl describe pod -n gitea
+   kubectl logs -n gitea
+   ```
+   If you want to see the logs of a specific pod, you can use the following command:
+   ```bash
+   kubectl logs -n gitea gitea-{id}
+   ```
+   where {id} is the id of the pod that you want to see the logs of.
+   Remember, you can get the id of the pods by running:
+   ```bash
+   kubectl get pods -n gitea
+   ```
+For further steps, you can follow the official documentation: https://docs.gitea.com/installation/install-on-kubernetes 
+I wish you the best of luck!
+
+## Secrets secrets dubby doo, I've got a secret for you ( AKA Vault from HashiCorp )
+
+Vault is a tool for securely accessing secrets. A secret is anything that you want to tightly control access to, such as API keys, passwords, certificates, and more. Vault provides a unified interface to any secret, while providing tight access control and recording a detailed audit log.
+
+We will integrate this sucker with ArgoCD, so we can use it to store our secrets and then use them in our applications.
+Its actually a super cool tool; but a pain to setup the permissions for it.
+
+But I will let you deal with the permissions and suffer on your own, but I will give you some hints on how to do it.
+
+First though, lets install vault.
 
 

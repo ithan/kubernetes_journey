@@ -17,7 +17,8 @@ service:
       app: gitea
   ssh:
     annotations:
-      metallb.universe.tf/allow-shared-ip: gite
+      metallb.universe.tf/allow-shared-ip: gite # This annotation is required for ssh to work with metallb
+      # Honestly, I havent managed to get ssh working yet, so this may as well be useless :D
 
 gitea:
   config:
