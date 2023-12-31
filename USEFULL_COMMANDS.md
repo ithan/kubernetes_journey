@@ -50,6 +50,10 @@
     ```bash
     kubectl get ingress -n [namespace]
     ```
+- **List ingresses for all namespaces:**
+    ```bash
+    kubectl get ingress --all-namespaces
+    ```
 - **List Certificates:**
     ```bash
     kubectl get certificates -n [namespace]

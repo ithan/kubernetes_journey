@@ -21709,6 +21709,9 @@ spec:
       containers:
       - args:
         - /usr/local/bin/argocd-server
+        - --staticassets
+        - /shared/app
+        - --insecure
         env:
         - name: ARGOCD_SERVER_INSECURE
           valueFrom:

@@ -61,6 +61,7 @@ K3s is a lightweight Kubernetes distribution, perfect for edge, IoT, and CI/CD e
    You can do this by running the following commands:
    ```bash
    cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+   sudo chmod 644 ~/.kube/config
    export KUBECONFIG=~/.kube/config
    ```
 
@@ -76,10 +77,17 @@ Cert-Manager is a Kubernetes add-on that automates the management and issuance o
    Warning: Read the documentation before applying the YAML file. The YAML file might change in the future.
    Docs: [cert-manager.io/docs/installation/kubernetes/](https://cert-manager.io/docs/getting-started/)
 
-   ```bash
+   Now we want to create a namespace for cert-manager:
+
+   Then we apply the cert-manager YAML file:
 
    ```bash
    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
+   ```
+
+   I personally downloaded the YAML file and applied it using the following command:
+   ```bash
+   kubectl apply -f cert-manager.yaml
    ```
 
 2. Then we check if the cert-manager pods are running:
@@ -142,12 +150,58 @@ ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes. Let's d
    kubectl apply -f ingress.yaml
    ```
 
-4. **Initial Configuration**: Retrieve the initial admin password for ArgoCD:
+NOTE: Even though we call it ingress, its not actually an ingress, its an IngressRoute.
+k3s uses Traefik as the default ingress controller, and Traefik uses IngressRoute instead of Ingress.
+
+4. **Apply the certificate**
+   ```bash
+   kubectl apply -f certificate-production.yaml
+   ```
+
+5. **Initial Configuration**: Retrieve the initial admin password for ArgoCD:
    ```bash
    kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
    ```
 
-5. **Using ArgoCD**: With ArgoCD installed and accessed, you're now ready to use it for deploying and managing applications in your Kubernetes clusters.
+6. **Verify Installation**: Verify that ArgoCD is running with:
+   ```bash
+   kubectl get pods -n argocd
+   ```
+7. **Verify the ingress**
+   ```bash
+   kubectl get ingressroute -n argocd
+   ```
+
+If we try to use ArgoCD now, we will get to_many_redirects error. To fix this we will follow https://github.com/argoproj/argo-cd/issues/2953
+
+Where they say that we need to set --insecure flag to argocd-server.
+
+The easiest way to do this is to edit the argocd-server deployment and add the flag to the command.
+
+To do this we run the following command:
+```bash
+kubectl edit deployment argocd-server -n argocd
+```
+
+This will open a vim editor, we need to find the line that starts with command: and add --insecure to the end of the line.
+To search for the args line, we can use the following shortcut in vim:
+```bash
+/args
+```
+
+Then get yourself in edit mode by pressing i, and add --insecure to the end of the line.
+
+I added:
+```bash
+   --insecure
+   --/shared/app # This will enable the use of the shared app feature.
+   --staticassets # This will enable the use of the static assets feature.
+```
+
+Then we can save and exit vim by pressing esc and then typing :wq and pressing enter.
+
+
+8. **Using ArgoCD**: With ArgoCD installed and accessed, you're now ready to use it for deploying and managing applications in your Kubernetes clusters.
 ### Notes
 - Since the master has only 2GB of RAM, and I wanted to install Argo, I had to find a way to tell kubernetes to use my node that has 8GB of ram to deploy argo.
 For that I used the following command:
