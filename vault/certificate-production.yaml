@@ -8,6 +8,6 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: vault.ithankube.xyz
+  commonName: {domain-name}
   dnsNames:
-  - vault.ithankube.xyz
+  - {domain-name}

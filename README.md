@@ -381,3 +381,29 @@ But I will let you deal with the permissions and suffer on your own, but I will 
 First though, lets install vault.
 
 
+I will be using the helm chart for vault, so lets add the helm repo for vault.
+
+1. **Add the helm repo**
+   ```bash
+   helm repo add hashicorp https://helm.releases.hashicorp.com
+   ```
+
+2. **Update the helm repo**
+   ```bash
+   helm repo update
+   ```
+
+3. **CD into the vault directory**
+   ```bash
+   cd vault
+   ```
+
+4. **Install vault**
+   ```bash
+   helm install vault hashicorp/vault -f values.yaml -n vault --create-namespace
+   ```
+5. **Apply the certificate and the ingress**
+   ```bash
+   kubectl apply -f certificate-production.yaml
+   kubectl apply -f ingress.yaml
+   ```   
