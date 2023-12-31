@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ssl-cert-production
+  namespace: argocd
+spec:
+  secretName: ssl-cert-production
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: {domain-name}
+  dnsNames:
+  - {domain-name}

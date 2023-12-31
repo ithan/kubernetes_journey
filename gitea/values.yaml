@@ -1,0 +1,34 @@
+redis-cluster:
+  enabled: false
+postgresql:
+  enabled: true
+postgresql-ha:
+  enabled: false
+
+persistence:
+  enabled: true
+# Enable ssh
+
+service:
+  http:
+    type: ClusterIP
+    port: 3000
+    annotations:
+      app: gitea
+  ssh:
+    annotations:
+      metallb.universe.tf/allow-shared-ip: gite
+
+gitea:
+  config:
+    database:
+      DB_TYPE: postgres
+    session:
+      PROVIDER: db
+    cache:
+      ADAPTER: memory
+    queue:
+      TYPE: level
+    indexer:
+      ISSUE_INDEXER_TYPE: bleve
+      REPO_INDEXER_ENABLED: true

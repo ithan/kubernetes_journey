@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd-server-ingress
+  namespace: argocd
+spec:
+  entryPoints:
+    - websecure 
+  routes:
+  - match: Host(`{domain-name}`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: argocd-server
+      port: 80 
+  tls:
+    certResolver: letsencrypt-prod 
+    secretName: ssl-cert-production

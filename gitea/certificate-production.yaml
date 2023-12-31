@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ssl-cert-production
+  namespace: gitea
+spec:
+  secretName: gitea-tls-production
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: {domain-name}
+  dnsNames:
+  - {domain-name}

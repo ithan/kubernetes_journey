@@ -1,0 +1,19 @@
+# SSH Service for gitea in kubernetes
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea-ssh
+  namespace: gitea
+  annotations:
+    metallb.universe.tf/allow-shared-ip: gite
+  labels:
+    app: gitea
+spec:
+  type: ClusterIP
+  ports:
+  - name: ssh
+    port: 22
+    targetPort: 222
+    protocol: TCP
+  selector:
+    app: gitea
