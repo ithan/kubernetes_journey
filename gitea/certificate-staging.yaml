@@ -7,9 +7,9 @@ spec:
   secretName: gitea-server-tls
   duration: 2160h # 90 days
   renewBefore: 360h # 15 days
-  commonName: {domain-name}
+  commonName: gitea.ithankube.xyz
   dnsNames:
-    - {domain-name}
+    - gitea.ithankube.xyz
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer

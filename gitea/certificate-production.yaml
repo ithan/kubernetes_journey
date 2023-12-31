@@ -8,6 +8,6 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: {domain-name}
+  commonName: gitea.ithankube.xyz
   dnsNames:
-  - {domain-name}
+  - gitea.ithankube.xyz

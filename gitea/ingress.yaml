@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure 
   routes:
-  - match: Host(`{domain-name}`) && PathPrefix(`/`)
+  - match: Host(`gitea.ithankube.xyz`) && PathPrefix(`/`)
     kind: Rule
     services:
     - name: gitea-http

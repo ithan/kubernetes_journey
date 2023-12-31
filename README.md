@@ -238,7 +238,75 @@ argocd-server-{id}    1/1     Running   0          10m   {ip}         k3s-agent-
 ```
 
 
-## Bonus: Installing Gitea
+## Install helm
+Helm is a package manager for Kubernetes. It allows you to deploy applications in your cluster with a single command. Here's how to install it:
+
+:warning: **Note**: This may be outdated, check the [docs](https://helm.sh/docs/intro/install/) for the latest installation instructions.
+1. **Install Helm**: First, install Helm using the following command:
+   ```bash
+   curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+   chmod 700 get_helm.sh
+   ./get_helm.sh
+   ```
+
+2. **Verify Installation**: Verify that Helm is installed with:
+   ```bash
+   helm version
+   ```
+   The output should be something like this:
+   ```bash
+   version.BuildInfo{Version:"v3.13.1", GitCommit:"3547a4b5bf5edb5478ce352e18858d8a552a4110", GitTreeState:"clean", GoVersion:"go1.20.8"}
+   ```
+
+## Installing Gitea
 Gitea is a lightweight self-hosted Git service. Here's a quick guide to install it in your K3s setup:
 
-TODO: Add a guide to install gitea in k3s.
+For this one, we will use helm with custom values.yaml file.
+
+First lets add the help
+
+1. **Add the helm repo**
+   ```bash
+   helm repo add gitea-charts https://dl.gitea.com/charts/
+   ```
+2. **Update the helm repo**
+   ```bash
+   helm repo update
+   ```
+3. **CD into the gitea-charts directory**
+   ```bash
+   cd gitea
+   ```
+:warning: **Note**: Here if you are not a lazy bastard as I am, you should setup a proper database infrastrcture, but since I'm still learning and I don't want to get into that yet, I will just use the default values and pray for the best.
+
+4. **Install gitea**
+   ```bash
+   helm install gitea gitea-charts/gitea -f values.yaml -n gitea --create-namespace
+   ```
+   [ Updated to include -n gitea ] :D 
+
+4.5 **Fix your mistake**
+  If you are stupid like me, you will forgot to select the namespace when you install gitea, and you will end up with gitea in the default namespace. So lets uninstall it and reinstall it in the correct namespace.
+  ```bash
+   helm uninstall gitea
+   helm install gitea gitea-charts/gitea -f values.yaml -n gitea --create-namespace
+   ```
+[ Updated to include --create-namespace, since I forgot to add it the first time ]
+
+5. **Apply the certificate and the ingress**
+   ```bash
+   kubectl apply -f certificate-production.yaml
+   kubectl apply -f ingress.yaml
+   ```
+
+6. **Verify the ingress**
+   ```bash
+   kubectl get ingressroute -n gitea
+   ```
+
+7. **Verify the certificate**
+   ```bash
+   kubectl get certificate -n gitea
+   ```
+
+
